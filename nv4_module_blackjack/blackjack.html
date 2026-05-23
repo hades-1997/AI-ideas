@@ -3,661 +3,254 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BlackJack</title>
+<title>Blackjack - VOL.01 / 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:ital,wght@0,400;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'bg-deep': '#0f1115',
+          'bg-surface': '#1a1d24',
+          'text-primary': '#ffffff',
+          'text-secondary': '#a0a5b0',
+          'text-dim': '#6b7280',
+          'accent-coral': '#ff5a5f',
+          'accent-amber': '#fbbf24',
+          'border-default': '#2a2d36',
+        },
+        fontFamily: {
+          body: ['Inter', 'sans-serif'],
+          display: ['Space Grotesk', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #1a2035;
-    --surface: #1e2a3a;
-    --card-bg: #f0ece0;
-    --accent: #e84142;
-    --gold: #f0a500;
-    --text: #ffffff;
-    --subtext: #8899aa;
-    --border: #2a3a4a;
-
-    /* Breakpoints / Containers */
-    --container-xs: 20rem;
-    --container-sm: 24rem;
-    --container-md: 28rem;
-    --container-lg: 32rem;
-    --container-xl: 36rem;
-    --container-2xl: 42rem;
-    --container-3xl: 48rem;
-    --container-4xl: 56rem;
-    --container-5xl: 64rem;
-    --container-6xl: 72rem;
-    --container-7xl: 80rem;
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
-
-  body {
-    font-family: 'Barlow', 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* NAV */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 32px;
-    height: 64px;
-    background: linear-gradient(180deg, #1e2a3a 0%, #141c2a 100%);
-    border-bottom: 2px solid var(--accent);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    position: relative;
-    z-index: 10;
-  }
-  nav .nav-left, nav .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  nav a {
-    color: var(--subtext);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-family: 'Barlow Condensed', sans-serif;
-    transition: all .25s ease;
-    padding: 8px 16px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid transparent;
-  }
-  nav a:hover { 
-    color: var(--text); 
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
-  nav a .nav-icon {
-    font-size: 16px;
-  }
-  .balance-display {
-    color: var(--gold);
-    font-weight: 900;
-    font-size: 18px;
-    font-family: 'Barlow Condensed', monospace;
-    letter-spacing: 1px;
-    background: rgba(240, 165, 0, 0.15);
-    padding: 8px 20px;
-    border-radius: 24px;
-    border: 1px solid rgba(240, 165, 0, 0.4);
-    box-shadow: 0 0 12px rgba(240, 165, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .balance-display::before {
-    content: '💰';
-    font-size: 18px;
-  }
-
-  /* LOGO */
-  .game-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0 8px;
-  }
-  .logo {
-    font-size: 26px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .logo span:first-child { color: var(--text); }
-  .logo span:last-child { color: var(--accent); font-style: italic; }
-  .username-tag {
-    background: var(--accent);
-    color: white;
-    padding: 6px 16px;
-    font-weight: 800;
-    font-size: 13px;
-    letter-spacing: 1px;
-    transform: rotate(-2deg);
-    display: inline-block;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-
-  /* MAIN GAME AREA */
-  main {
-    flex: 1;
-    padding: 0 0 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .game-wrap {
-    width: 100%;
-    padding: 0 16px;
-    margin: 0 auto;
-  }
-  @media (min-width: 20rem) { .game-wrap { max-width: var(--container-xs); } }
-  @media (min-width: 24rem) { .game-wrap { max-width: var(--container-sm); } }
-  @media (min-width: 28rem) { .game-wrap { max-width: var(--container-md); } }
-  @media (min-width: 32rem) { .game-wrap { max-width: var(--container-lg); } }
-  @media (min-width: 36rem) { .game-wrap { max-width: var(--container-xl); } }
-  @media (min-width: 42rem) { .game-wrap { max-width: var(--container-2xl); } }
-  @media (min-width: 48rem) { .game-wrap { max-width: var(--container-3xl); } }
-  @media (min-width: 56rem) { .game-wrap { max-width: var(--container-4xl); } }
-  /* @media (min-width: 64rem) { .game-wrap { max-width: var(--container-5xl); } }
-  @media (min-width: 72rem) { .game-wrap { max-width: var(--container-6xl); } }
-  @media (min-width: 80rem) { .game-wrap { max-width: var(--container-7xl); } } */
-
-  .game-table {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px 24px 18px;
-    position: relative;
-    min-height: 420px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Watermark */
-  .watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 100px;
-    font-weight: 900;
-    font-family: 'Barlow Condensed', sans-serif;
-    color: rgba(255,255,255,0.04);
-    letter-spacing: 8px;
-    pointer-events: none;
-    white-space: nowrap;
-    user-select: none;
-  }
-
-  .sound-btn {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    background: none;
-    border: none;
-    color: var(--subtext);
-    cursor: pointer;
-    font-size: 20px;
-    transition: color .2s;
-    z-index: 10;
-  }
-  .sound-btn:hover { color: var(--text); }
-
-  /* HAND AREA */
-  .hands-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    position: relative;
-    z-index: 2;
-    width: 100%;
-  }
-
-  .hand-section { text-align: center; }
-
-  .score-badge {
-    display: inline-block;
-    background: #2a3a4a;
-    color: white;
-    padding: 3px 16px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 15px;
-    margin-bottom: 6px;
-    min-width: 44px;
-    font-family: 'Barlow', sans-serif;
-  }
-
-  .result-badge {
-    display: inline-block;
-    padding: 3px 16px;
-    border-radius: 3px;
-    font-weight: 800;
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    margin: 2px 0;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .result-badge.win { background: #27ae60; color: white; }
-  .result-badge.lose { background: var(--accent); color: white; }
-  .result-badge.push { background: #7f8c8d; color: white; }
-  .result-badge.blackjack { background: var(--gold); color: #111; }
-
-  /* CARDS */
-  .cards {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    margin: 2px 0;
-    flex-wrap: wrap;
-  }
-
-  .card {
-    width: 72px;
-    height: 104px;
-    border-radius: 6px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.55);
-    display: flex;
-    overflow: hidden;
-    animation: dealCard .22s ease-out;
-    flex-shrink: 0;
-    background: var(--card-bg);
+  .card-anim {
+    animation: dealCard .3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
   }
   @keyframes dealCard {
-    from { transform: translateY(-24px) scale(0.85); opacity: 0; }
-    to   { transform: translateY(0)     scale(1);    opacity: 1; }
+    from { transform: translateY(-40px) scale(0.8) rotateY(90deg); opacity: 0; }
+    to   { transform: translateY(0) scale(1) rotateY(0deg); opacity: 1; }
   }
-
-  /* Split card layout */
-  .card-left {
-    width: 30px;
-    flex-shrink: 0;
-    padding: 7px 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-right: 1px solid rgba(0,0,0,0.08);
-  }
-  .card-rank {
-    font-size: 20px;
-    font-weight: 900;
-    line-height: 1;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .card-suit-sm {
-    font-size: 13px;
-    line-height: 1;
-    margin-top: 3px;
-  }
-  .card-right {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .card-suit-lg {
-    font-size: 36px;
-    line-height: 1;
-  }
-
-  /* Hidden/back card */
-  .card.card-back {
-    background: #182840;
-  }
-  .card-back-inner {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: repeating-linear-gradient(
-      45deg,
-      rgba(232,65,66,0.12) 0px, rgba(232,65,66,0.12) 2px,
-      transparent 2px, transparent 10px
-    );
-  }
-  .card-back-diamond {
-    width: 44px;
-    height: 44px;
-    border: 2px solid rgba(232,65,66,0.7);
-    transform: rotate(45deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .card-back-diamond::after {
-    content: '';
-    width: 26px;
-    height: 26px;
-    border: 1.5px solid rgba(232,65,66,0.5);
-  }
-
-  .red { color: #c0392b !important; }
-  .black { color: #1a1a1a !important; }
-
-  .bet-info {
-    font-size: 11px;
-    color: var(--subtext);
-    margin-top: 4px;
-    background: rgba(0,0,0,0.3);
-    padding: 2px 10px;
-    border-radius: 3px;
-    display: inline-block;
-    font-family: 'Barlow', sans-serif;
-  }
-
-  /* DIVIDER */
-  .hands-divider {
-    width: 100%;
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 4px 0;
-  }
-
-  /* STATUS MESSAGE */
-  .status-msg {
-    text-align: center;
-    font-size: 12px;
-    color: var(--subtext);
-    margin-top: 6px;
-    min-height: 18px;
-  }
-
-  /* ACTION BAR (bên ngoài bàn, dưới game-table) */
-  .action-bar {
-    display: flex;
-    margin-top: 8px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .ab-btn {
-    flex: 1;
-    height: 72px;
-    background: var(--surface);
-    border: none;
-    border-right: 1px solid var(--border);
-    color: #ccc;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    font-family: 'Barlow Condensed', sans-serif;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background .15s, color .15s;
-    line-height: 1.2;
-  }
-  .ab-btn:last-child { border-right: none; }
-  .ab-btn:hover:not(:disabled) { background: #253448; color: #fff; }
-  .ab-btn:active:not(:disabled) { background: #1a2a3a; }
-  .ab-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .ab-btn.ab-primary { color: #fff; }
-
-  /* BETTING PANEL */
-  .bet-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 12px 20px;
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .bet-input-wrap {
-    display: flex;
-    align-items: center;
-    background: #141c2a;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    flex: 1;
-    min-width: 160px;
-    overflow: hidden;
-  }
-  .bet-icon {
-    background: var(--accent);
-    color: white;
-    padding: 0 12px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    font-size: 15px;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  #betInput {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: white;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 0 10px;
-    height: 44px;
-    font-family: 'Barlow', monospace;
-  }
-  .quick-bet-btns {
-    display: flex;
-    gap: 6px;
-  }
-  .quick-btn {
-    background: #2a3a4a;
-    color: var(--subtext);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0 14px;
-    height: 44px;
-    font-weight: 700;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.5px;
-    transition: all .15s;
-  }
-  .quick-btn:hover { background: #3a4a5a; color: white; }
-  .place-bet-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0 28px;
-    height: 44px;
-    font-weight: 800;
-    font-size: 14px;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-family: 'Barlow Condensed', sans-serif;
-    transition: all .15s;
-    white-space: nowrap;
-  }
-  .place-bet-btn:hover { background: #c0392b; }
-  .place-bet-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  /* MODALS */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 32px;
-    width: 360px;
-    max-width: 90vw;
-  }
-  .modal h3 { font-size: 18px; margin-bottom: 20px; }
-  .modal input {
-    width: 100%;
-    background: #141c2a;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: white;
-    padding: 10px 14px;
-    font-size: 14px;
-    margin-bottom: 16px;
-    outline: none;
-  }
-  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
-  .modal-btns button {
-    padding: 8px 20px;
-    border: none;
-    border-radius: 4px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .btn-cancel { background: #2a3a4a; color: var(--subtext); }
-  .btn-confirm { background: var(--accent); color: white; }
-  .modal textarea {
-    width: 100%;
-    background: #141c2a;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: white;
-    padding: 10px 14px;
-    font-size: 12px;
-    font-family: monospace;
-    height: 120px;
-    resize: vertical;
-    margin-bottom: 16px;
-    outline: none;
-  }
-
-  /* STATS */
-  .stats-bar {
-    display: flex;
-    gap: 16px;
-    padding: 5px 32px;
-    background: #141c2a;
-    font-size: 11px;
-    color: var(--subtext);
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    font-family: 'Barlow', sans-serif;
-  }
-  .stats-bar span { font-weight: 700; color: var(--text); }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a2d36; border-radius: 4px; }
+  
+  /* Badge styles for Result Area */
+  .result-badge { display: inline-block; padding: 4px 16px; border-radius: 4px; font-weight: 800; font-size: 14px; letter-spacing: 1px; font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+  .result-badge.win { background: #27ae60; color: white; }
+  .result-badge.lose { background: #ff5a5f; color: white; }
+  .result-badge.push { background: #6b7280; color: white; }
+  .result-badge.blackjack { background: #fbbf24; color: #000; }
 </style>
 </head>
-<body>
+<body class="bg-bg-deep text-text-primary font-body flex flex-col min-h-screen relative overflow-x-hidden selection:bg-accent-coral/30">
 
-<!-- NAV -->
-<nav>
-  <div class="nav-left">
-    <a href="#" onclick="location.reload()"><span class="nav-icon">🏠</span> Home</a>
-    <a href="#" onclick="openImport()"><span class="nav-icon">📥</span> Import</a>
-    <a href="#" onclick="doExport()"><span class="nav-icon">📤</span> Export</a>
-  </div>
-  <div class="nav-right">
-    <div class="balance-display" id="navBalance">$0.00</div>
-  </div>
-</nav>
+<!-- Noise Overlay -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-0 bg-noise"></div>
 
-<!-- STATS -->
-<div class="stats-bar">
+<!-- Header -->
+<header class="relative z-50 bg-bg-deep/80 backdrop-blur-md border-b border-border-default shrink-0">
+  <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-4 sm:gap-6">
+      <a href="#" onclick="location.reload()" class="flex items-center gap-1 group cursor-pointer">
+        <span class="font-display text-[11px] sm:text-[13px] font-black tracking-[0.2em] uppercase text-text-secondary group-hover:text-accent-coral transition-colors">HOME</span>
+      </a>
+    </div>
+
+    <div class="flex items-center gap-4 sm:gap-10">
+      <div class="flex items-center gap-4 border-r border-border-default pr-4 sm:pr-10">
+        <button onclick="openImport()" class="group flex flex-col items-end">
+          <span class="font-display font-black text-[11px] sm:text-[12px] tracking-widest text-text-secondary group-hover:text-text-primary uppercase transition-colors">IMPORT</span>
+        </button>
+        <div class="w-px h-6 bg-border-default opacity-30"></div>
+        <button onclick="doExport()" class="group flex flex-col items-end">
+          <span class="font-display font-black text-[11px] sm:text-[12px] tracking-widest text-text-secondary group-hover:text-text-primary uppercase transition-colors">EXPORT</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col items-end">
+        <span id="navBalance" class="font-display font-black text-sm sm:text-lg tracking-tighter text-accent-amber drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">
+          $1000.00
+        </span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STATS BAR (hidden but logic preserved, moved to bottom footer for cleaner UI, or just hide it) -->
+<div class="hidden" id="statsBar">
   Thắng: <span id="statWin">0</span> &nbsp;|&nbsp;
   Thua: <span id="statLose">0</span> &nbsp;|&nbsp;
   Hòa: <span id="statPush">0</span> &nbsp;|&nbsp;
   Tổng lợi: <span id="statProfit">$0.00</span>
 </div>
 
-<!-- MAIN -->
-<main>
-  <div class="game-wrap">
-
-    <!-- HEADER -->
-    <div class="game-header">
-      <div class="logo"><span>BLACK</span><span>JACK</span></div>
-      <div class="username-tag" onclick="openNameModal()" id="usernameTag">PLAYER</div>
+<!-- Main Game Container -->
+<main class="relative z-10 grow flex flex-col items-center justify-start pt-4 sm:pt-8 pb-4 custom-scrollbar w-full">
+  <div class="w-full max-w-4xl px-4 sm:px-6 flex flex-col items-center shrink-0">
+    
+    <!-- Title Row -->
+    <div class="w-full mb-4 flex items-center justify-between">
+      <h1 class="font-display text-2xl sm:text-3xl font-black text-text-primary tracking-tighter italic uppercase leading-none">
+        Black<span class="text-accent-coral">jack</span>
+        <span class="text-xs text-text-dim not-italic tracking-widest block mt-1 font-body">VOL.01 / 2026</span>
+      </h1>
+      <div id="usernameTag" onclick="openNameModal()" class="cursor-pointer bg-accent-coral text-bg-deep font-display font-black text-[11px] sm:text-[13px] tracking-widest px-4 py-1.5 rotate-3 shadow-xl border border-bg-deep/10 hover:rotate-0 transition-all duration-300">
+        PLAYER
+      </div>
     </div>
 
-    <div class="game-table">
-      <div class="watermark" id="watermark">21</div>
-      <button class="sound-btn" onclick="toggleSound()" id="soundBtn" title="Âm thanh">🔊</button>
+    <!-- Table Area -->
+    <div class="w-full bg-bg-surface border border-border-default rounded-xl p-6 sm:p-10 relative overflow-hidden flex flex-col items-center min-h-[420px] shadow-2xl">
+      <div id="watermark" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-[120px] sm:text-[180px] font-black text-text-primary/5 tracking-widest pointer-events-none select-none uppercase z-0">
+        21
+      </div>
+      
+      <button onclick="toggleSound()" id="soundBtn" class="absolute top-4 left-4 text-text-secondary hover:text-text-primary transition-colors z-20 text-lg" title="Âm thanh">🔊</button>
 
-      <div class="hands-area">
+      <!-- Hands Area -->
+      <div class="w-full flex flex-col items-center gap-4 relative z-10">
+        
         <!-- Dealer -->
-        <div class="hand-section" id="dealerSection">
-          <div class="score-badge" id="dealerScore"></div>
-          <div class="cards" id="dealerCards"></div>
+        <div id="dealerSection" class="flex flex-col items-center">
+          <div id="dealerScore" class="bg-border-default text-text-primary px-4 py-1 rounded-full font-display font-bold text-sm mb-2 opacity-80 min-w-[32px] text-center"></div>
+          <div id="dealerCards" class="flex justify-center gap-[-20px] sm:gap-2 flex-wrap min-h-[140px]"></div>
         </div>
-
-        <hr class="hands-divider">
 
         <!-- Result -->
-        <div id="resultArea" style="min-height:26px;text-align:center;"></div>
+        <div id="resultArea" class="h-10 flex items-center justify-center my-2"></div>
 
         <!-- Player -->
-        <div class="hand-section" id="playerSection">
-          <div class="score-badge" id="playerScore"></div>
-          <div class="cards" id="playerCards"></div>
-          <div class="bet-info" id="currentBetInfo" style="display:none"></div>
+        <div id="playerSection" class="flex flex-col items-center">
+          <div id="playerScore" class="bg-border-default text-text-primary px-4 py-1 rounded-full font-display font-bold text-sm mb-2 opacity-80 min-w-[32px] text-center"></div>
+          <div id="playerCards" class="flex justify-center gap-[-20px] sm:gap-2 flex-wrap min-h-[140px]"></div>
+          <div id="currentBetInfo" style="display:none" class="mt-3 bg-bg-deep/50 border border-border-default text-text-secondary px-3 py-1 rounded text-xs font-display font-bold tracking-widest"></div>
         </div>
 
-        <div class="status-msg" id="statusMsg">Đặt cược để bắt đầu ván mới</div>
+        <div id="statusMsg" class="text-text-secondary font-display text-sm tracking-widest uppercase mt-4 text-center animate-pulse min-h-[20px]">
+          Đặt cược để bắt đầu ván mới
+        </div>
       </div>
     </div>
 
-    <!-- ACTION BAR (hiện khi đang chơi) -->
-    <div class="action-bar" id="actionBar" style="display:none">
-      <button class="ab-btn ab-primary" onclick="hit()">RÚT</button>
-      <button class="ab-btn ab-primary" onclick="stand()">DỪNG</button>
-      <button class="ab-btn" id="btnSplit" disabled>TÁCH</button>
-      <button class="ab-btn ab-primary" id="btnDouble" onclick="doubleDown()">GẤP ĐÔI (X2)</button>
-    </div>
-
-    <!-- NEW GAME BAR (hiện sau khi kết thúc) -->
-    <div class="action-bar" id="newGameBar" style="display:none">
-      <button class="ab-btn ab-primary" onclick="resetRound()">VÁN MỚI</button>
-    </div>
-
-    <!-- BET PANEL (ẩn khi đang chơi) -->
-    <div class="bet-panel" id="betPanel">
-      <div class="bet-input-wrap">
-        <div class="bet-icon">$</div>
-        <input type="number" id="betInput" placeholder="0.00" min="1" step="1" value="">
+    <!-- Controls Area -->
+    <div class="w-full mt-6 relative overflow-visible">
+      
+      <!-- ACTION BAR -->
+      <div id="actionBar" style="display:none" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 items-stretch h-24">
+        <button onclick="hit()" class="group flex flex-col items-center justify-center bg-bg-surface border-2 border-border-default hover:border-accent-coral transition-all shadow-lg active:scale-95 rounded-lg">
+          <span class="font-display text-sm sm:text-base font-black text-text-primary uppercase group-hover:text-accent-coral tracking-tight">RÚT</span>
+        </button>
+        <button onclick="stand()" class="group flex flex-col items-center justify-center bg-bg-surface border-2 border-border-default hover:border-accent-coral transition-all shadow-lg active:scale-95 rounded-lg">
+          <span class="font-display text-sm sm:text-base font-black text-text-primary uppercase group-hover:text-accent-coral tracking-tight">DỪNG</span>
+        </button>
+        <button id="btnSplit" disabled class="group flex flex-col items-center justify-center bg-bg-surface border-2 border-border-default transition-all shadow-lg rounded-lg disabled:opacity-20 disabled:grayscale disabled:pointer-events-none">
+          <span class="font-display text-sm sm:text-base font-black text-text-primary uppercase tracking-tight">TÁCH</span>
+        </button>
+        <button id="btnDouble" onclick="doubleDown()" class="group flex flex-col items-center justify-center bg-bg-surface border-2 border-border-default hover:border-accent-coral transition-all shadow-lg active:scale-95 rounded-lg disabled:opacity-20 disabled:grayscale disabled:pointer-events-none">
+          <span class="font-display text-sm sm:text-base font-black text-text-primary uppercase group-hover:text-accent-coral tracking-tight">GẤP ĐÔI (X2)</span>
+        </button>
       </div>
-      <div class="quick-bet-btns">
-        <button class="quick-btn" onclick="halfBet()">½</button>
-        <button class="quick-btn" onclick="doubleBet()">2X</button>
-        <button class="quick-btn" onclick="maxBet()">MAX</button>
+
+      <!-- NEW GAME BAR -->
+      <div id="newGameBar" style="display:none" class="flex justify-center h-16">
+        <button onclick="resetRound()" class="w-full sm:w-1/2 bg-accent-coral text-white font-display font-black text-lg tracking-widest uppercase rounded-lg hover:bg-[#ff7a7e] transition-colors shadow-lg active:scale-95">
+          VÁN MỚI
+        </button>
       </div>
-      <button class="place-bet-btn" id="placeBetBtn" onclick="placeBet()">ĐẶT CƯỢC</button>
+
+      <!-- BET PANEL -->
+      <div id="betPanel" class="flex flex-col sm:flex-row items-center gap-3 w-full bg-bg-surface p-4 border border-border-default rounded-xl shadow-lg">
+        <div class="flex items-center bg-bg-deep border border-border-default rounded-lg w-full sm:w-auto flex-1 overflow-hidden h-12">
+          <div class="bg-accent-amber text-bg-deep px-4 h-full flex items-center font-display font-bold text-lg">
+            $
+          </div>
+          <input type="number" id="betInput" placeholder="0.00" min="1" step="1" class="w-full bg-transparent border-none outline-none text-white font-display font-bold px-4 text-lg">
+        </div>
+        
+        <div class="flex gap-2 w-full sm:w-auto justify-between sm:justify-start">
+          <button onclick="halfBet()" class="flex-1 sm:flex-none bg-border-default hover:bg-[#3a3f4a] text-white px-4 h-12 rounded-lg font-display font-bold transition-colors">1/2</button>
+          <button onclick="doubleBet()" class="flex-1 sm:flex-none bg-border-default hover:bg-[#3a3f4a] text-white px-4 h-12 rounded-lg font-display font-bold transition-colors">2X</button>
+          <button onclick="maxBet()" class="flex-1 sm:flex-none bg-border-default hover:bg-[#3a3f4a] text-white px-4 h-12 rounded-lg font-display font-bold transition-colors">MAX</button>
+        </div>
+        
+        <button id="placeBetBtn" onclick="placeBet()" class="w-full sm:w-auto bg-accent-coral hover:bg-[#ff7a7e] disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 h-12 rounded-lg font-display font-black tracking-widest uppercase transition-all shadow-[0_0_15px_rgba(255,90,95,0.3)] hover:shadow-[0_0_25px_rgba(255,90,95,0.5)] active:scale-95 whitespace-nowrap">
+          ĐẶT CƯỢC
+        </button>
+      </div>
     </div>
 
   </div>
+
+  <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="sm:hidden mt-10 mb-4 flex items-center gap-2 text-text-dim font-display text-[12px] uppercase tracking-widest font-black opacity-50 hover:opacity-100 transition-opacity">
+    <span>↑ Lên đầu trang</span>
+  </button>
 </main>
 
-<!-- USERNAME MODAL -->
-<div class="modal-overlay" id="nameModal">
-  <div class="modal">
-    <h3>Tên người chơi</h3>
-    <input type="text" id="nameInput" placeholder="Nhập tên..." maxlength="20">
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeNameModal()">Hủy</button>
-      <button class="btn-confirm" onclick="saveName()">Lưu</button>
+<!-- Footer -->
+<footer class="py-4 border-t border-border-default bg-bg-surface/30 shrink-0 relative z-50">
+  <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] uppercase tracking-widest font-display text-text-dim font-black">
+    <div class="flex gap-6">
+      <span class="hover:text-accent-coral transition-colors cursor-pointer" onclick="document.getElementById('rulesModal').classList.remove('hidden'); document.getElementById('rulesModal').classList.add('flex');">LUẬT CHƠI</span>
+    </div>
+    <div class="flex gap-4">
+      <span>W: <span id="fWin">0</span></span>
+      <span>L: <span id="fLose">0</span></span>
+      <span>D: <span id="fPush">0</span></span>
+      <span class="text-accent-amber">PROFIT: <span id="fProfit">$0.00</span></span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODALS -->
+
+<!-- Rules Modal -->
+<div id="rulesModal" class="hidden fixed inset-0 bg-black/80 z-[100] items-center justify-center p-4 backdrop-blur-sm transition-all">
+  <div class="bg-bg-surface border border-border-default p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl">
+    <h3 class="font-display font-black text-2xl mb-4 text-accent-coral">LUẬT CHƠI</h3>
+    <ul class="text-text-secondary text-sm space-y-2 font-body list-disc pl-5">
+      <li>Mục tiêu: Đạt điểm càng gần 21 càng tốt, không vượt quá 21.</li>
+      <li>Dealer sẽ phải rút bài cho đến khi đạt 17 điểm trở lên.</li>
+      <li>Quân J, Q, K tính 10 điểm. Quân A tính 1 hoặc 11 điểm.</li>
+      <li>Blackjack (21 điểm từ 2 quân đầu tiên) thưởng x2.5 tiền cược.</li>
+      <li>Thắng bình thường thưởng x2 tiền cược.</li>
+    </ul>
+    <div class="mt-6 flex justify-end">
+      <button onclick="document.getElementById('rulesModal').classList.add('hidden'); document.getElementById('rulesModal').classList.remove('flex');" class="bg-border-default hover:bg-[#3a3f4a] text-white px-6 py-2 rounded font-display font-bold transition-colors">ĐÓNG</button>
     </div>
   </div>
 </div>
 
-<!-- IMPORT MODAL -->
-<div class="modal-overlay" id="importModal">
-  <div class="modal">
-    <h3>Import Dữ liệu</h3>
-    <textarea id="importData" placeholder="Dán dữ liệu export vào đây..."></textarea>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeImport()">Hủy</button>
-      <button class="btn-confirm" onclick="doImport()">Import</button>
+<!-- Username Modal -->
+<div id="nameModal" class="hidden fixed inset-0 bg-black/80 z-[100] items-center justify-center p-4 backdrop-blur-sm transition-all">
+  <div class="bg-bg-surface border border-border-default p-6 sm:p-8 rounded-xl w-full max-w-sm shadow-2xl">
+    <h3 class="font-display font-black text-xl mb-4 text-white">TÊN NGƯỜI CHƠI</h3>
+    <input type="text" id="nameInput" placeholder="Nhập tên..." maxlength="12" class="w-full bg-bg-deep border border-border-default rounded p-3 text-white font-display font-bold outline-none focus:border-accent-coral transition-colors mb-4">
+    <div class="flex justify-end gap-3">
+      <button onclick="closeNameModal()" class="bg-transparent hover:bg-border-default text-text-secondary px-4 py-2 rounded font-display font-bold transition-colors">HỦY</button>
+      <button onclick="saveName()" class="bg-accent-coral hover:bg-[#ff7a7e] text-white px-6 py-2 rounded font-display font-bold transition-colors">LƯU</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div id="importModal" class="hidden fixed inset-0 bg-black/80 z-[100] items-center justify-center p-4 backdrop-blur-sm transition-all">
+  <div class="bg-bg-surface border border-border-default p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl">
+    <h3 class="font-display font-black text-xl mb-4 text-white">IMPORT DỮ LIỆU</h3>
+    <textarea id="importData" placeholder="Dán chuỗi dữ liệu vào đây..." class="w-full h-32 bg-bg-deep border border-border-default rounded p-3 text-text-secondary font-mono text-xs outline-none focus:border-accent-amber transition-colors mb-4 resize-none"></textarea>
+    <div class="flex justify-end gap-3">
+      <button onclick="closeImport()" class="bg-transparent hover:bg-border-default text-text-secondary px-4 py-2 rounded font-display font-bold transition-colors">HỦY</button>
+      <button onclick="doImport()" class="bg-accent-amber hover:bg-[#fcd34d] text-bg-deep px-6 py-2 rounded font-display font-black transition-colors">NẠP</button>
     </div>
   </div>
 </div>
@@ -751,19 +344,23 @@ function isRed(suit) { return suit === '♥' || suit === '♦'; }
 
 function renderCard(card, hidden=false) {
   const el = document.createElement('div');
+  el.className = 'card-anim w-16 sm:w-20 h-24 sm:h-[110px] rounded-lg shadow-xl shrink-0 -ml-6 sm:ml-0 flex relative bg-[#f8f9fa] border border-[#e5e7eb] overflow-hidden first:ml-0';
+  
   if (hidden) {
-    el.className = 'card card-back';
-    el.innerHTML = `<div class="card-back-inner"><div class="card-back-diamond"></div></div>`;
+    el.innerHTML = `<div class="w-full h-full bg-border-default flex items-center justify-center">
+                      <div class="w-10 h-10 border-2 border-text-secondary/50 rotate-45 flex items-center justify-center">
+                        <div class="w-5 h-5 border-2 border-text-secondary/30"></div>
+                      </div>
+                    </div>`;
   } else {
-    el.className = 'card';
-    const c = isRed(card.suit) ? 'red' : 'black';
+    const c = isRed(card.suit) ? 'text-[#ff5a5f]' : 'text-[#0f1115]';
     el.innerHTML = `
-      <div class="card-left">
-        <div class="card-rank ${c}">${card.value}</div>
-        <div class="card-suit-sm ${c}">${card.suit}</div>
+      <div class="w-6 sm:w-8 shrink-0 flex flex-col items-center pt-1.5 sm:pt-2 border-r border-[#0f1115]/5">
+        <div class="font-display font-black text-base sm:text-xl leading-none ${c}">${card.value}</div>
+        <div class="text-[10px] sm:text-xs leading-none mt-1 ${c}">${card.suit}</div>
       </div>
-      <div class="card-right">
-        <div class="card-suit-lg ${c}">${card.suit}</div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="text-3xl sm:text-4xl leading-none opacity-90 ${c}">${card.suit}</div>
       </div>`;
   }
   return el;
@@ -793,13 +390,26 @@ function updateBalance() {
 }
 
 function updateStats() {
+  // Original top bar (hidden now)
   document.getElementById('statWin').textContent = stats.win;
   document.getElementById('statLose').textContent = stats.lose;
   document.getElementById('statPush').textContent = stats.push;
+  
+  // Footer text
+  document.getElementById('fWin').textContent = stats.win;
+  document.getElementById('fLose').textContent = stats.lose;
+  document.getElementById('fPush').textContent = stats.push;
+
   const p = stats.profit;
   const el = document.getElementById('statProfit');
-  el.textContent = (p >= 0 ? '+' : '') + '$' + p.toFixed(2);
+  const el2 = document.getElementById('fProfit');
+  const txt = (p >= 0 ? '+$' : '-$') + Math.abs(p).toFixed(2);
+  
+  el.textContent = txt;
   el.style.color = p >= 0 ? '#27ae60' : '#e84142';
+
+  el2.textContent = txt;
+  el2.className = p >= 0 ? 'text-[#27ae60]' : 'text-[#ff5a5f]';
 }
 
 // ─── GAME LOGIC ───────────────────────────────────────────────────────────────
@@ -823,7 +433,7 @@ function startRound() {
   dealerHand = [drawCard(), drawCard()];
 
   document.getElementById('resultArea').innerHTML = '';
-  document.getElementById('actionBar').style.display = 'flex';
+  document.getElementById('actionBar').style.display = 'grid';
   document.getElementById('newGameBar').style.display = 'none';
   document.getElementById('betPanel').style.display = 'none';
 
@@ -1026,11 +636,13 @@ function toggleSound() {
 // ─── USERNAME ─────────────────────────────────────────────────────────────────
 function openNameModal() {
   document.getElementById('nameInput').value = playerName;
-  document.getElementById('nameModal').classList.add('active');
+  document.getElementById('nameModal').classList.remove('hidden');
+  document.getElementById('nameModal').classList.add('flex');
   setTimeout(() => document.getElementById('nameInput').focus(), 100);
 }
 function closeNameModal() {
-  document.getElementById('nameModal').classList.remove('active');
+  document.getElementById('nameModal').classList.add('hidden');
+  document.getElementById('nameModal').classList.remove('flex');
 }
 function saveName() {
   const v = document.getElementById('nameInput').value.trim();
@@ -1049,10 +661,12 @@ function doExport() {
 
 function openImport() {
   document.getElementById('importData').value = '';
-  document.getElementById('importModal').classList.add('active');
+  document.getElementById('importModal').classList.remove('hidden');
+  document.getElementById('importModal').classList.add('flex');
 }
 function closeImport() {
-  document.getElementById('importModal').classList.remove('active');
+  document.getElementById('importModal').classList.add('hidden');
+  document.getElementById('importModal').classList.remove('flex');
 }
 function doImport() {
   try {
@@ -1087,7 +701,6 @@ function loadData() {
     }
   } catch(e) {}
   
-  // Cấp lại 1000$ khi phá sản hoặc mới chơi
   if (balance <= 0) {
     balance = 1000;
   }
