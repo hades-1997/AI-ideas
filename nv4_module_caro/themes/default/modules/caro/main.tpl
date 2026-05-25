@@ -25,6 +25,17 @@
       <button class="btn-restart" id="btn-restart">{LANG.restart}</button>
     </div>
 
+
+
+    <!-- Board -->
+    <div class="board-wrapper" id="board-wrapper">
+      <div class="board-inner-wrapper">
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="loading-spinner"></div>
+        </div>
+        <div class="board" id="board"></div>
+      </div>
+    </div>
     <!-- Scoreboard -->
     <div class="scoreboard">
       <div class="score-card score-x">
@@ -40,17 +51,6 @@
         <div class="score-value" id="score-o">0</div>
       </div>
     </div>
-
-    <!-- Board -->
-    <div class="board-wrapper" id="board-wrapper">
-      <div class="board-inner-wrapper">
-        <div class="loading-overlay" id="loading-overlay">
-          <div class="loading-spinner"></div>
-        </div>
-        <div class="board" id="board"></div>
-      </div>
-    </div>
-
     <!-- Move History -->
     <div class="move-history">
       <div class="move-history-title">{LANG.move_history}</div>

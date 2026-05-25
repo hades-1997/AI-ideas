@@ -138,7 +138,7 @@
 .caro-container .scoreboard {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
+  margin: 24px 0;
 }
 
 .caro-container .score-card {
@@ -189,14 +189,14 @@
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: 12px;
-  padding: 12px;
+  padding: 5px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
 }
 
 /* === Cell === */
 .caro-container .cell {
-  width: 40px; /* Increased from 32px */
-  height: 40px;
+  width: 32px; /* Increased from 32px */
+  height: 32px;
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border-default);
   border-radius: 4px;
@@ -414,8 +414,8 @@
 /* Scrollbar customization */
 .caro-container .board-wrapper::-webkit-scrollbar,
 .caro-container .move-list::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 .caro-container .board-wrapper::-webkit-scrollbar-track,
 .caro-container .move-list::-webkit-scrollbar-track {
