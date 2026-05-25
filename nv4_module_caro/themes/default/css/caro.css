@@ -1,0 +1,432 @@
+/* ============================================
+   CỜ CARO - Vibe Theme Game Styles (NukeViet scoped)
+   ============================================ */
+
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Anybody:wght@700;900&family=Be+Vietnam+Pro:wght@400;500;600&display=swap');
+
+.caro-container {
+  --color-bg-deep: #0f1923;
+  --color-bg-surface: #162232;
+  --color-bg-elevated: #1e2f42;
+  --color-accent-coral: #ff6b4a;
+  --color-accent-amber: #ffb830;
+  --color-accent-sky: #38bdf8;
+  --color-text-primary: #f0ede6;
+  --color-text-secondary: #8b9db5;
+  --color-text-dim: #4a6180;
+  --color-border-default: #253549;
+  --color-border-hover: #ff6b4a;
+
+  --font-display: 'Anybody', sans-serif;
+  --font-body: 'Be Vietnam Pro', sans-serif;
+  
+  font-family: var(--font-body);
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.caro-container * {
+  box-sizing: border-box;
+}
+
+.caro-container .container-inner {
+  width: 100%;
+}
+
+/* === Title === */
+.caro-container .game-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem; /* Increased from 2.25rem */
+  font-weight: 700;
+  color: var(--color-accent-coral);
+  margin: 16px 0 8px;
+}
+
+.caro-container .game-subtitle {
+  font-size: 1.05rem; /* Increased from 0.875rem */
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+/* === Difficulty Section === */
+.caro-container .difficulty-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.caro-container .difficulty-label {
+  font-size: 1.05rem;
+  color: var(--color-text-secondary);
+}
+
+.caro-container .difficulty-options {
+  display: flex;
+  gap: 8px;
+}
+
+.caro-container .diff-btn {
+  padding: 8px 16px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  font-weight: 500;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.caro-container .diff-btn:hover {
+  border-color: var(--color-accent-sky);
+  color: var(--color-text-primary);
+}
+
+.caro-container .diff-btn.active {
+  border-color: var(--color-accent-coral);
+  color: var(--color-accent-coral);
+  background: rgba(255, 107, 74, 0.1);
+}
+
+/* === Header Bar (Status + Restart) === */
+.caro-container .header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.caro-container .game-status {
+  font-family: var(--font-display);
+  font-size: 1.35rem; /* Increased from 1.125rem */
+}
+
+.caro-container .game-status.status-x { color: var(--color-accent-coral); }
+.caro-container .game-status.status-o { color: var(--color-accent-sky); }
+.caro-container .game-status.status-draw { color: var(--color-text-secondary); }
+.caro-container .game-status.status-thinking {
+  color: var(--color-accent-amber);
+}
+
+.caro-container .btn-restart {
+  padding: 10px 20px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-family: inherit;
+  border: 1px solid var(--color-accent-coral);
+  color: var(--color-accent-coral);
+  background: var(--color-bg-surface);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.caro-container .btn-restart:hover {
+  background: var(--color-accent-coral);
+  color: var(--color-bg-deep);
+}
+
+/* === Scoreboard === */
+.caro-container .scoreboard {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.caro-container .score-card {
+  flex: 1;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  padding: 16px 12px; /* Increased padding */
+}
+
+.caro-container .score-label {
+  font-size: 0.9rem; /* Increased from 0.75rem */
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.caro-container .score-value {
+  font-size: 1.8rem; /* Increased from 1.5rem */
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.caro-container .score-x .score-value { color: var(--color-accent-coral); }
+.caro-container .score-o .score-value { color: var(--color-accent-sky); }
+.caro-container .score-draw .score-value { color: var(--color-text-primary); }
+
+/* === Board Wrapper === */
+.caro-container .board-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.caro-container .board-inner-wrapper {
+  margin: 0 auto;
+  width: max-content;
+}
+
+.caro-container .board {
+  display: grid;
+  gap: 2px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+/* === Cell === */
+.caro-container .cell {
+  width: 40px; /* Increased from 32px */
+  height: 40px;
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px; /* Increased from 17px */
+  font-weight: 900;
+  user-select: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.caro-container .cell:hover:not(.cell-x):not(.cell-o):not(.cell-disabled) {
+  background-color: var(--color-bg-elevated);
+  border-color: var(--color-accent-sky);
+  box-shadow: 0 0 0 2px var(--color-accent-sky);
+}
+
+.caro-container .cell.cell-x {
+  color: var(--color-accent-coral);
+  cursor: default;
+  text-shadow: 0 0 8px currentColor;
+  animation: cell-piece-appear 0.35s ease-out both;
+}
+
+.caro-container .cell.cell-o {
+  color: var(--color-accent-sky);
+  cursor: default;
+  text-shadow: 0 0 8px currentColor;
+  animation: cell-piece-appear 0.35s ease-out both;
+}
+
+@keyframes cell-piece-appear {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.caro-container .cell.cell-disabled {
+  background-color: var(--color-bg-elevated);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.caro-container .cell.cell-last {
+  border-width: 2px;
+  border-color: var(--color-accent-coral);
+  box-shadow: 0 0 4px rgba(255, 107, 74, 0.2);
+}
+
+.caro-container .cell.cell-win {
+  animation: cell-winning-pulse 2s ease-in-out infinite;
+  text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
+}
+
+@keyframes cell-winning-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 184, 48, 0.4); }
+  50% { box-shadow: 0 0 16px rgba(245, 158, 11, 0.6); }
+}
+
+/* === Loading Overlay === */
+.caro-container .loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 25, 35, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.caro-container .loading-overlay.active {
+  display: flex;
+}
+
+.caro-container .loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border-default);
+  border-top-color: var(--color-accent-sky);
+  border-radius: 50%;
+  animation: caro-spin 0.8s linear infinite;
+}
+
+@keyframes caro-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === Game Over Overlay === */
+.caro-container .game-over-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 25, 35, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  animation: caro-fade-in 0.3s ease;
+}
+
+.caro-container .game-over-overlay.active {
+  display: flex;
+}
+
+@keyframes caro-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.caro-container .game-over-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  max-width: 420px; /* Increased from 360px */
+  width: 90%;
+  animation: caro-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes caro-slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.caro-container .game-over-icon {
+  font-size: 3.5em; /* Increased */
+  margin-bottom: 16px;
+}
+
+.caro-container .game-over-title {
+  font-family: var(--font-display);
+  font-size: 1.8em; /* Increased */
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.caro-container .game-over-title.win { color: var(--color-accent-coral); }
+.caro-container .game-over-title.lose { color: var(--color-accent-sky); }
+.caro-container .game-over-title.draw { color: var(--color-text-secondary); }
+
+.caro-container .game-over-msg {
+  font-size: 1.05rem; /* Increased */
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.caro-container .btn-play-again {
+  padding: 12px 28px;
+  font-size: 1.05rem; /* Increased */
+  font-weight: 500;
+  font-family: inherit;
+  border: 1px solid var(--color-accent-coral);
+  color: var(--color-bg-deep);
+  background: var(--color-accent-coral);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.caro-container .btn-play-again:hover {
+  background: transparent;
+  color: var(--color-accent-coral);
+}
+
+/* === Move History === */
+.caro-container .move-history {
+  margin-top: 24px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.caro-container .move-history-title {
+  font-size: 1.05rem; /* Increased */
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.caro-container .move-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.caro-container .move-item {
+  font-size: 0.9rem; /* Increased */
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  border: 1px solid var(--color-border-default);
+}
+
+.caro-container .move-item.move-x {
+  color: var(--color-accent-coral);
+  background: rgba(255, 107, 74, 0.1);
+}
+
+.caro-container .move-item.move-o {
+  color: var(--color-accent-sky);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+/* Scrollbar customization */
+.caro-container .board-wrapper::-webkit-scrollbar,
+.caro-container .move-list::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.caro-container .board-wrapper::-webkit-scrollbar-track,
+.caro-container .move-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.caro-container .board-wrapper::-webkit-scrollbar-thumb,
+.caro-container .move-list::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: 4px;
+}
+.caro-container .board-wrapper::-webkit-scrollbar-thumb:hover,
+.caro-container .move-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-dim);
+}
