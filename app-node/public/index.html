@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DocTranslate AI — Dịch tài liệu bằng AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- ===== App header ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/>
+            <path d="m9 13 2 2 4-4"/>
+          </svg>
+        </span>
+        <span class="brand-name">DocTranslate <span class="brand-accent">AI</span></span>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" id="theme-toggle" class="btn btn-ghost btn-icon" aria-label="Chuyển chế độ sáng / tối" title="Chuyển chế độ sáng / tối">
+          <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+        <button type="button" id="settings-btn" class="btn btn-secondary btn-sm">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>Cài đặt</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <h1>Dịch tài liệu bằng AI</h1>
+      <p class="subtitle">PDF, Word và Ảnh — dịch chính xác, giữ nguyên bố cục gốc.</p>
+    </section>
+
+    <!-- ===== Translate card ===== -->
+    <form id="translate-form" class="card" novalidate>
+      <!-- Dropzone -->
+      <div class="field">
+        <span class="label">Tài liệu nguồn</span>
+        <label class="dropzone" id="dropzone" for="file">
+          <span class="dz-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/>
+              <path d="M12 12v9"/>
+              <path d="m16 16-4-4-4 4"/>
+            </svg>
+          </span>
+          <span class="dz-text">
+            <strong>Kéo thả file vào đây</strong> hoặc <span class="dz-browse">chọn từ máy</span>
+          </span>
+          <span class="dz-hint">PDF · DOCX · PNG · JPG · WEBP · TIFF · BMP — tối đa 25MB</span>
+          <input type="file" id="file" name="file" class="sr-only"
+                 accept=".pdf,.docx,.png,.jpg,.jpeg,.webp,.tif,.tiff,.bmp" />
+        </label>
+
+        <div class="file-chip" id="file-chip" hidden>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/>
+          </svg>
+          <span class="file-chip-name" id="file-chip-name"></span>
+          <span class="file-chip-size" id="file-chip-size"></span>
+          <button type="button" class="file-chip-remove" id="file-remove" aria-label="Bỏ chọn file">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Options grid -->
+      <div class="options-grid">
+        <div class="field">
+          <label class="label" for="sourceLang">Ngôn ngữ gốc</label>
+          <div class="select-wrap">
+            <select id="sourceLang" name="sourceLang"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="targetLang">Dịch sang</label>
+          <div class="select-wrap">
+            <select id="targetLang" name="targetLang"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="outputFormat">Định dạng đầu ra</label>
+          <div class="select-wrap">
+            <select id="outputFormat" name="outputFormat">
+              <option value="pdf">PDF</option>
+              <option value="docx">Word (DOCX)</option>
+              <option value="image">Ảnh (PNG)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="provider">AI Provider</label>
+          <div class="select-wrap">
+            <select id="provider" name="provider">
+              <option value="openai">OpenAI (ChatGPT)</option>
+              <option value="gemini">Google Gemini</option>
+              <option value="claude">Anthropic Claude</option>
+              <option value="deepseek">DeepSeek</option>
+            </select>
+          </div>
+          <span class="hint" id="key-status" role="status"></span>
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn" class="btn btn-primary btn-lg">
+        <span class="btn-spinner" aria-hidden="true"></span>
+        <svg class="icon btn-idle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/>
+          <path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>
+        </svg>
+        <span class="btn-label">Dịch tài liệu</span>
+      </button>
+    </form>
+
+    <!-- ===== Status ===== -->
+    <div id="status" class="status" hidden></div>
+
+    <!-- ===== Result preview ===== -->
+    <section id="result" class="card result-card" hidden aria-label="Kết quả dịch">
+      <div class="result-head">
+        <svg class="icon result-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <path d="M14 2v6h6"/>
+        </svg>
+        <div class="result-meta">
+          <span class="result-name" id="result-name"></span>
+          <span class="result-size" id="result-size"></span>
+        </div>
+        <button type="button" id="result-download" class="btn btn-primary btn-sm">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <path d="m7 10 5 5 5-5"/>
+            <path d="M12 15V3"/>
+          </svg>
+          <span>Tải xuống</span>
+        </button>
+        <button type="button" id="result-close" class="btn btn-ghost btn-icon" aria-label="Đóng xem trước">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="result-preview" id="result-preview"></div>
+    </section>
+
+    <footer class="page-footer">
+      Chạy trên máy của bạn · API key được lưu trong trình duyệt, không gửi đi đâu ngoài AI provider bạn chọn.
+    </footer>
+  </main>
+
+  <!-- ===== Settings modal ===== -->
+  <div id="settings-overlay" class="overlay" hidden>
+    <div class="modal" role="dialog" aria-labelledby="settings-title" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="settings-title">Cài đặt API key</h2>
+        <button type="button" id="settings-close" class="btn btn-ghost btn-icon" aria-label="Đóng cài đặt">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="modal-note">
+        Key được lưu trong <strong>localStorage của trình duyệt này</strong> và chỉ gửi tới server của bạn khi dịch.
+        Bỏ trống nếu server đã cấu hình sẵn key trong file <code>.env</code>.
+      </p>
+
+      <div class="provider-section">
+        <div class="provider-head">
+          <span class="provider-dot dot-openai" aria-hidden="true"></span>
+          <span class="label">OpenAI (ChatGPT)</span>
+        </div>
+        <input type="password" id="key-openai" placeholder="sk-..." autocomplete="off" aria-label="API key OpenAI" />
+        <input type="text" id="model-openai" placeholder="Model — mặc định: gpt-4o-mini" autocomplete="off" aria-label="Model OpenAI" />
+      </div>
+
+      <div class="provider-section">
+        <div class="provider-head">
+          <span class="provider-dot dot-gemini" aria-hidden="true"></span>
+          <span class="label">Google Gemini</span>
+        </div>
+        <input type="password" id="key-gemini" placeholder="AIza..." autocomplete="off" aria-label="API key Gemini" />
+        <input type="text" id="model-gemini" placeholder="Model — mặc định: gemini-2.0-flash" autocomplete="off" aria-label="Model Gemini" />
+      </div>
+
+      <div class="provider-section">
+        <div class="provider-head">
+          <span class="provider-dot dot-claude" aria-hidden="true"></span>
+          <span class="label">Anthropic Claude</span>
+        </div>
+        <input type="password" id="key-claude" placeholder="sk-ant-..." autocomplete="off" aria-label="API key Claude" />
+        <input type="text" id="model-claude" placeholder="Model — mặc định: claude-sonnet-5" autocomplete="off" aria-label="Model Claude" />
+      </div>
+
+      <div class="provider-section">
+        <div class="provider-head">
+          <span class="provider-dot dot-deepseek" aria-hidden="true"></span>
+          <span class="label">DeepSeek</span>
+        </div>
+        <input type="password" id="key-deepseek" placeholder="sk-..." autocomplete="off" aria-label="API key DeepSeek" />
+        <input type="text" id="model-deepseek" placeholder="Model — mặc định: deepseek-chat" autocomplete="off" aria-label="Model DeepSeek" />
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="settings-clear" class="btn btn-danger-outline btn-sm">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          <span>Xóa hết key</span>
+        </button>
+        <div class="spacer"></div>
+        <button type="button" id="settings-cancel" class="btn btn-secondary btn-sm">Hủy</button>
+        <button type="button" id="settings-save" class="btn btn-primary btn-sm">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          <span>Lưu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
