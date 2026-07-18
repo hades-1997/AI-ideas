@@ -61,8 +61,23 @@ router.post('/translate', upload.single('file'), async (req, res) => {
     );
     res.send(result.buffer);
   } catch (err) {
+    // Full technical detail goes to the server log; the client gets a short,
+    // actionable message (err.userMessage when a provider error was classified).
     console.error('[translate]', err);
-    res.status(500).json({ error: err.message || 'Translation failed' });
+    const status = err.statusCode >= 400 && err.statusCode < 500 ? err.statusCode : 500;
+    const providerLabels = {
+      openai: 'OpenAI',
+      gemini: 'Google Gemini',
+      claude: 'Anthropic Claude',
+      deepseek: 'DeepSeek',
+    };
+    const label = providerLabels[req.body?.provider];
+    const message = err.userMessage
+      ? label
+        ? `[${label}] ${err.userMessage}`
+        : err.userMessage
+      : err.message || 'Dịch tài liệu thất bại. Vui lòng thử lại.';
+    res.status(status).json({ error: message });
   }
 });
 

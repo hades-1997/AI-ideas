@@ -97,9 +97,30 @@ async function translateBatchWithRetry(batch, sourceLang, targetLang, callRaw, d
     const badKey400 = status === 400 && /api key/i.test(detailMsg);
     if (status === 401 || status === 403 || status === 429 || badKey400) {
       const detail = detailMsg || err.message;
+      let userMessage;
+      if (status === 429) {
+        // "limit: 0" / quota / billing = the account has no remaining allowance;
+        // waiting will not help, unlike a plain rate limit.
+        if (/quota|billing|free[_ ]?tier|limit:\s*0/i.test(detail)) {
+          userMessage =
+            'Tài khoản AI của bạn đã hết hạn mức sử dụng (quota) hoặc chưa bật thanh toán cho model này. ' +
+            'Hãy kiểm tra gói cước / billing của nhà cung cấp, đổi model khác, hoặc chuyển sang AI provider khác trong phần Cài đặt.';
+        } else {
+          userMessage = 'Nhà cung cấp AI đang giới hạn tốc độ (rate limit) — bạn gửi yêu cầu quá nhanh.';
+          const retry = detail.match(/retry in ([\d.]+)\s*s/i);
+          userMessage += retry
+            ? ` Vui lòng thử lại sau khoảng ${Math.ceil(parseFloat(retry[1]))} giây.`
+            : ' Vui lòng đợi một lát rồi thử lại.';
+        }
+      } else {
+        userMessage =
+          'API key không hợp lệ hoặc không có quyền truy cập. Hãy kiểm tra lại key trong phần Cài đặt.';
+      }
       const reason = status === 429 ? 'Rate limit / quota exceeded' : 'Invalid or unauthorized API key';
       const fatal = new Error(`${reason} (HTTP ${status}): ${detail}`);
       fatal.fatal = true;
+      fatal.statusCode = status;
+      fatal.userMessage = userMessage;
       throw fatal;
     }
     if (err.fatal) throw err;
